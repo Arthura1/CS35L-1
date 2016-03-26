@@ -1,0 +1,39 @@
+Lab Partner: Hsien-Chih Hung
+
+Commands for setup:
+Opened command line on Linux and ran:
+	sudo apt-get update
+	sudo apt-get install openssh-server
+	sudo apt-get install openssh-client
+
+Created new user for lab partner:
+	sudo useradd -d /home/hung -m hung
+	sudo passwd hung
+	cd /home/hung
+Created new directory:
+	sudo mkdir .ssh
+For changing ownership:
+	sudo chown -R hung .ssh
+	sudo chmod 700 .ssh
+	(Flag 700: owner can read, write and execute)
+
+Ran ifconfig for getting IP address:
+My IP: 10.97.85.50
+Gave this to partner.
+
+Lab partner created a user for me.
+
+Client steps:
+Partner's IP: 10.97.85.26
+ping server 
+
+Logging in:
+	ssh-keygen - generated a public/private key pair
+	ssh-copy-id –i mathur@10.97.85.26 - For copying key to partner's server
+	ssh -add - adds identity to the authentication agent
+
+ssh mathur@10.97.85.26
+
+Running applications:
+	ssh -X mathur@10.97.85.26 - connect with X-Forwarding 
+	Ran commands xterm, gedit, firefox
