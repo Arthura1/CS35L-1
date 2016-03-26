@@ -1,0 +1,110 @@
+export LC_ALL='C': This command is used for 
+being in the  C or POSIX locale.
+
+sort /usr/share/dict/words > words
+ New file 'words' is created & contains sorted words
+
+Used wget http://web.cs.ucla.edu/classes/winter16/cs35L/assign/assign2.html
+to get the html file 
+
+Running Commands on assign2.html:
+1. cat assign2.html | tr -c 'A-Za-z' '[\n*]'
+This command filters everything out other 
+than the words having characters A-Z and a-z and replaces 
+non-alphabet chars with new lines.
+
+2. cat assign2.html | tr -cs 'A-Za-z' '[\n*]'
+Difference in output: One word per line displayed
+and no empty new lines.
+
+3. cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort
+Difference: All the words of the html file are printed in an 
+alphabetically sorted order, each word on new line.
+
+4. cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u
+Difference:  Words are alphabetically sorted, but printed only once.
+
+5. cat assign2.html | tr -cs 'A-Za-z' '[\n*]' 
+| sort -u | comm - words
+Displays: 
+In column 1 - Words unique to sorted assign2.html
+In column 2 - Words unique to 'words' 
+In column 3 - Words that appear in  both assign2.html and words
+
+6. cat assign2.html | tr -cs 'A-Za-z' '[\n*]' 
+| sort -u | comm -23 - words
+Just displays cloumn 1; Words that are unique to assign2.html
+
+Used wget mauimapp.com/moolelo/hwnwdseng.htm.
+Wrote and ran the following script to get sorted Hawaiian words:
+
+BUILDWORDS SCRIPT
+----------------------------------------------
+#!/bin/sh
+
+#select all lines with <td>..</td>
+grep "<td>.*</td>"|
+
+#remove all lines having html tags
+sed 's/<[^>]*>//g' |
+ 
+#replace okina with apostrophe
+sed "s/\`/'/g" |
+
+#remove blank new lines
+sed '/^\s*$/d' |
+
+#convert upper case to lower case
+tr '[:upper:]' '[:lower:]' | 
+
+#remove every even line
+sed -n 'g;n;p'|
+
+#remove leading whitespace
+sed 's/^\s*//g' |
+
+#replace commas and spaces  with new line
+sed 's/[, ]/\n/g' |
+
+#remove words with non-hawaiian chars
+sed  "/[^p^k^'^m^n^w^l^h^a^e^i^o^u]/d" |
+
+#sort words, display just once
+sort -u
+----------------------------------------------
+
+Run: ./buildwords < hwnwdseng.htm > hwords
+hwords contains all Hawaiian words.
+
+Command for Hawaiian spell checker:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - hwords
+
+This command lists all the words that are  in the file assign2.html 
+but not in the Hawaiian dictionary
+
+For words misspelled in English:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]'
+| sort -u | comm -23 - words | wc -l
+There are such 39 words
+
+For words misspelled in Hawaiian:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - hwords | wc -l 
+There are 405 such words
+
+For words misspelled in both English and Hawaiian:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - hwords | comm -23 -words | wc -l 
+There are 35 such words
+
+For words misspelled in English but not in Hawaiian:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - words | comm -12 - hwords
+This gives halau, lau and wiki
+
+For words misspelled in Hawaiian but not in English:
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - hwords | comm -12 - words | wc -l
+There are 370 such words
+

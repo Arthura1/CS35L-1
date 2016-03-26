@@ -1,0 +1,31 @@
+Q1:
+Brady removed "case_long_iso_time_style:" because there was a
+goto statement that went to this label. No, it was uneccessary 
+to remove this line because the goto line was removed, thus that label
+would never be referenced.
+
+Q2:
+This version of Coreutils might cause the following problems: 
+- In countries where date is read in a different format, 
+it might cause problems in comprehension.
+- It would cause inconsistencies in other programs that display dates 
+in different format.
+
+Q3:
+Command: ./randline.py -n 5 /dev/null
+Output gives: "IndexError: list index out of range"
+This is because the python script attempts to access elements of the file
+using arguments in brackets. Since there are no elements at that 
+index(or any index), we get this error. 
+
+Q4:
+Output:
+File "./randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+
+This is because python3 has a different error syntax. 
+python2 had automatic tuple unpacking but in
+python3 the tuple parameter unpacking was removed 
+causing the error syntax to be different.

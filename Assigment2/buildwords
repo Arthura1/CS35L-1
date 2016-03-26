@@ -1,0 +1,32 @@
+#!/bin/sh
+
+#select all lines with <td>..</td>
+grep "<td>.*</td>"|
+
+#remove all lines having html tags
+sed 's/<[^>]*>//g' |
+ 
+#replace okina with apostrophe
+sed "s/\`/'/g" |
+
+#remove blank new lines
+sed '/^\s*$/d' |
+
+#convert upper case to lower case
+tr '[:upper:]' '[:lower:]' | 
+
+#remove every even line
+sed -n 'g;n;p'|
+
+#remove leading whitespace
+sed 's/^\s*//g' |
+
+#replace commas and spaces  with new line
+sed 's/[, ]/\n/g' |
+
+#remove words with non-hawaiian chars
+sed  "/[^p^k^'^m^n^w^l^h^a^e^i^o^u]/d" |
+
+#sort words, display just once
+sort -u
+

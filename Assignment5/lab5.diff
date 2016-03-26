@@ -1,0 +1,16 @@
+2016-02-03  Mihir Mathur  <mathur@lnxsrv07.seas.ucla.edu>
+	*timespec.h: changed timespec_cmp to return correct output.
+
+--- coreutils-with-bug/lib/timespec.h	2016-02-03 23:17:32.322859000 -0800
++++ coreutils-buggy/coreutils-with-bug/lib/timespec.h	2005-09-21 23:05:39.000000000 -0700
+@@ -45,9 +45,7 @@
+ static inline int
+ timespec_cmp (struct timespec a, struct timespec b)
+ {
+-  int diff = a.tv_sec - b.tv_sec;
++  int diff;
++  if(a.tv_sec > b.tv_sec) diff=1;
++  else diff=0;
+   return diff ? diff : a.tv_nsec - b.tv_nsec;
+ }
+ 

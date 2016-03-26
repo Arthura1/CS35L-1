@@ -1,0 +1,107 @@
+Got the core-utils-with-bug by:
+wget http://web.cs.ucla.edu/classes/winter16/cs35L/assign/coreutils-with-bug.tar.gz
+
+tar -xvf coreutils-with-bug.tar.gz
+
+cd coreutils-with-bug.tar.gz
+mkdir build 
+./configure --prefix="$PWD/build"
+make
+make install
+
+make gives error:
+make install gives error: 
+Making install in lib
+In file included from utimecmp.c:41:0:
+utimens.h:2:5: error: conflicting types for 'futimens'
+ int futimens (int, char const *, struct timespec const [2]);
+     ^
+In file included from utimecmp.h:25:0,
+                 from utimecmp.c:25:
+/usr/include/sys/stat.h:373:12: note: previous declaration of 'futimens' was here
+ extern int futimens (int __fd, const struct timespec __times[2]) __THROW;
+            ^
+Makefile:659: recipe for target 'utimecmp.o' failed
+make[2]: *** [utimecmp.o] Error 1
+make[2]: Leaving directory '/w/home.07/cs/ugrad/mathur/cs35L/coreutils-with-bug/lib'
+Makefile:775: recipe for target 'install' failed
+make[1]: *** [install] Error 2
+make[1]: Leaving directory '/w/home.07/cs/ugrad/mathur/cs35L/coreutils-with-bug/lib'
+Makefile:419: recipe for target 'install-recursive' failed
+make: *** [install-recursive] Error 1
+
+
+Got the patch: wget http://web.cs.ucla.edu/classes/winter16/cs35L/assign/coreutils.diff
+patch -p0 < coreutils.diff
+
+The following files were patched: 
+patching file lib/utimens.c
+patching file lib/utimens.h
+patching file src/copy.c
+patching file src/tee.c
+patching file src/touch.c
+
+Ran make and make install, there were no errors.
+
+The original file had conflicting types for the function futimens.
+The renaming patch renamed futimens to coreutils_futimens
+and tee to coreutils_tee so that there are no type conflicts. 
+
+Checking the bug:
+touch -d '1917-10-11 11:00 GMT' /tmp/mihirm1
+touch /tmp/now1
+sleep 1
+touch /tmp/now2
+
+Run: ./src/ls -lt /tmp/mihirm1 /tmp/now1 /tmp/now2
+Gives the bug: Oldest file listed at top.
+
+For fixing the bug, opened the ls source file: emacs ls.c
+and examined the functions. Since the bug is in the ordering of
+the files by date, I looked at the sort functions by searching 
+for sort. Function sort_files() has operations on time_type and
+compare_mtime.
+
+
+GDB COMMANDS FOR DEBUGGING:
+: break <function_name> - set breakpoint at function_name
+: s - step into function
+: n - for next line of code 
+: list - for giving lines near 
+: bt - shows stack
+: f - Gives name of current function
+: finish - runs everything till exit
+: c - continue
+: q - quit
+
+
+gdb --args ./src/ls -lt /tmp/mihirm1 /tmp/now1 /tmp/now2
+gdb: break sort_file
+gdb: run
+breaks at sort_file()
+gdb 'n' and 's' repeatedly.
+gdp p for getting the values
+gdp 'p' on qsort gives (int (*)(V, V)) 0x406e10 <compare_mtime>
+<compare_mtime> looks like a function that compares based on time.
+compare_mtime returns cmp_mtime. 
+
+I ran gdb again and set another breakpoint at cmp_mtime.
+gdp: break cmp_mtime
+gdb:p 
+Function timespec_cmp is called:
+timespec_cmp (b=..., a=...) at ../lib/timespec.h
+int diff = a.tv_sec - b.tv_sec;
+
+Examined timespec_cmp in timespec.h.
+The problem is that a.tv_sec - b.tv_sec gives a very large negative 
+value that causes an integer overflow. It can be easily fixed by assigning
+diff 0 or 1 based on which is greater, a.tv_sec or b.tv_sec.
+
+Made new directory coreutils-buggy and untared the buggy version into it.
+
+The local file system on SEASnet is a 64 bit file system. 
+The tmp folder is NFS(Network File System) and uses a 32bit file system.
+UNIX epoch time starts from 1970. Time is stored in a 64 bit system
+as a combination of '+' or '-' sign and time elapsed since 1970.
+When a time is truncated from 64bit to 32bit, the bit containing the 
+'-' sign is lost and it appears that the date is in the future.

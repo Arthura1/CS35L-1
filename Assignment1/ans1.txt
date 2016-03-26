@@ -1,0 +1,94 @@
+1)man -k "keyword"
+
+2)/usr/local/cs/bin/cp
+/usr/local/cs/bin/wc
+Can be found using which "command_name"
+
+3)w - who is logged on and processes
+[ - No man entry
+X - network  transparent window system
+find /usr/bin/ -name '?'
+What they do can be found in man pages.
+
+4)
+/etc/alternatives/emacs is executed
+cd /usr/bin
+ls -l -k "emacs"
+
+5)g+s => Access: other users in the file’s group 
+and add file mode: set user/group ID on execution.
+
+o-x => Access: other users not in the file’s 
+group & Remove file mode bit: execute 
+(or search for directories)
+
+Look at man pages of chmod.
+
+6)find -mtime -21
+
+7)find -mtime -21 -type d
+./Desktop
+./Documents
+./Downloads
+./cs35L
+./.emacs.d
+./.emacs.d/auto-save-list
+
+8) cd /usr/bin/
+find -type l
+Some symbolic links: 
+./dvired
+./etags
+./psfaddtable
+./pdfjadetex
+./open
+./texhash
+./captoinfo
+./unxz
+./pmiostat
+./bzcat
+./apropos
+./xzegrep
+./lpq
+./etex
+...
+
+9)On lnxsrv09: libfreeblpriv3.so
+cd /usr/lib 
+ls -lrta
+
+10) LC_* environment variables
+
+11) sort-lines
+	sort-pages
+	sort-fields
+	sort-columns
+	sort-paragraphs
+	sort-regexp-fields
+	sort-numeric-fields
+	rmail-sort-by-author
+	rmail-sort-by-date
+	rmail-sort-by-labels
+	rmail-sort-by-lines
+	Buffer-menu-sort-by-column
+	...
+	C-h d sort
+
+12) Move cursor/ select.
+C-M-a : Move to start of defun/function
+C-M-b : Move backward over next s-expression
+C-M-c : Exit recursive editing level
+C-M-d : Move to right of first left paren
+C-M-e : Move to end of defun
+C-M-f : Move forward over next s-expression
+C-M-h : sets region of current defun     
+
+13) Aborts previous keystroke, rings bell.
+
+14) It reinserts previously killed text.
+
+15) emacs C-x d (dired command) shows total available memory.
+	ls -l doesn't 
+
+
+

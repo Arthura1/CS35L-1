@@ -1,0 +1,39 @@
+1. To get the file:
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+To unzip file:
+tar -xvf coreutils-7.6.tar.gz
+
+2. Read INSTALL file. To install file: 
+cd coreutils-7.6/
+Made new directory: mkdir new
+Run:  ./configure --prefix="$PWD/new"
+Run: make 
+Run: make install 
+
+3. 
+export LC_ALL='en_US.UTF-8'
+Bug can be seen by  ./ls -l bin/bash
+Correct version:  ls -l
+Difference in date format can be seen.
+
+4. To fix bug: 
+Went to the src folder in directory
+Opened ls.c : emacs ls.c
+Used Brady's patch to make following changes:
+Noted the lines with - and + sign in brady's patch and
+removed lines with - sign (case_long_iso_time_style:) and
+added lines with + sign to ls.c
+
+
+5.
+Ran make again.
+There were less commands executed this time because only ls.c 
+was modified. Make enters directories and outputs 
+"Nothing to be done for 'dir_name' "
+
+6.
+Ran make install
+touched a few files
+then ran: ./ls -l bin/bash
+Gives correct date format.
